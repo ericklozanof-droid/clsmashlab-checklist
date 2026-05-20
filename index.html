@@ -1,306 +1,313 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smash Lab - Checklist</title>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'DM Mono', monospace; background: #0f0f0f; color: #ddd; }
-        #root { display: flex; flex-direction: column; min-height: 100vh; }
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #111; }
-        ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
-        textarea:focus, input:focus { outline: none; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smash Lab - Checklist</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>
+:root{--gold:#C9A84C;--bg:#0f0f0f;--card:#1a1a1a;--border:#2a2a2a;--text:#ddd;--mute:#666}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Mono',monospace;background:var(--bg);color:var(--text)}
+input,textarea,button{font-family:inherit}
+input:focus,textarea:focus{outline:none}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:#111}
+::-webkit-scrollbar-thumb{background:#333;border-radius:3px}
+.app{min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:24px 16px 60px}
+.wrap{width:100%;max-width:520px}
+.head{display:flex;align-items:center;gap:12px;margin-bottom:28px}
+.brand{font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--gold);letter-spacing:.12em}
+.tag{font-size:10px;color:#555;background:#1f1f1f;padding:3px 8px;border-radius:4px;border:1px solid var(--border);letter-spacing:.08em}
+.hint{font-size:12px;color:var(--mute);margin-bottom:20px}
+.row{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px 20px;margin-bottom:10px;cursor:pointer;display:flex;align-items:center;gap:14px;transition:all .2s}
+.row-icon{font-size:22px}
+.row-dot{width:10px;height:10px;border-radius:50%;min-width:10px}
+.row-title{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--text);letter-spacing:.08em}
+.row-sub{font-size:11px;color:#555}
+.arrow{margin-left:auto;color:#444;font-size:16px}
+.back{background:none;border:none;color:#555;cursor:pointer;font-size:12px;margin-bottom:20px;display:flex;align-items:center;gap:6px}
+.pos-title{font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--gold);letter-spacing:.1em}
+.field{margin-bottom:24px}
+.field-named{padding-bottom:24px;border-bottom:1px solid var(--border)}
+.label{font-size:11px;color:var(--mute);letter-spacing:.06em;display:block;margin-bottom:8px}
+.label small{color:#444}
+.input,.textarea{width:100%;background:var(--card);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px}
+.input{padding:13px 16px;margin-bottom:8px}
+.input.on{border-color:#C9A84C55}
+.textarea{padding:12px 14px;font-size:12px;resize:vertical;line-height:1.6;color:#aaa}
+.textarea.on{border-color:#C9A84C44}
+.textarea.err{border-color:#dd6644}
+.alert{background:#aa4422;border:1px solid #dd6644;border-radius:6px;padding:10px 12px;font-size:11px;color:#fff;line-height:1.4}
+.pos-row{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.name-tag{font-size:11px;color:#555;margin-top:2px}
+.stats{display:flex;justify-content:space-between;margin-bottom:8px}
+.stat{font-size:11px;color:#555}
+.stat.gold{color:var(--gold)}
+.stat.done{color:#4ade80}
+.bar{height:4px;background:var(--border);border-radius:4px;overflow:hidden;margin-bottom:24px}
+.bar>div{height:100%;background:linear-gradient(90deg,var(--gold),#e8c96e);border-radius:4px;transition:width .4s}
+.sec{margin-bottom:24px}
+.sec-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.sec-title-wrap{display:flex;align-items:center;gap:8px}
+.sec-bar{width:4px;height:22px;border-radius:4px}
+.sec-title{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:.1em}
+.badge{font-size:11px;padding:3px 9px;border-radius:20px;background:#ffffff10;border:1px solid #333;color:var(--mute)}
+.badge.done{color:#4ade80;background:#4ade8020;border-color:#4ade8040}
+.check{display:flex;align-items:flex-start;gap:12px;padding:10px 14px;border-radius:8px;cursor:pointer;background:transparent;border:1px solid var(--border);margin-bottom:8px;transition:all .2s;user-select:none}
+.check.on{background:#C9A84C14;border-color:#C9A84C55}
+.check.off{cursor:not-allowed;opacity:.5}
+.check-box{width:20px;height:20px;min-width:20px;border-radius:5px;border:2px solid #444;display:flex;align-items:center;justify-content:center;margin-top:1px;transition:all .2s}
+.check.on .check-box{border-color:var(--gold);background:var(--gold)}
+.check-text{font-size:13px;color:#aaa;line-height:1.5;transition:all .2s}
+.check.on .check-text{color:var(--text);text-decoration:line-through}
+.btn{width:100%;padding:15px;border:none;border-radius:8px;font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:.1em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;color:#fff;transition:all .2s}
+.btn-wa{background:linear-gradient(135deg,#25d366,#1db954);border:1px solid #25d36650}
+.btn-blue{background:linear-gradient(135deg,#60a5fa,#4f8dd9);border:1px solid #60a5fa50}
+.btn-back{background:var(--card);border:1px solid var(--border);color:#555;font-size:15px;padding:13px}
+.btn:disabled{background:#666;cursor:not-allowed}
+.panel{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:24px 20px}
+.panel-title{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--gold);letter-spacing:.1em;margin-bottom:12px}
+.msg{background:#ffffff05;border:1px solid var(--border);border-radius:8px;padding:16px;font-size:12px;color:#aaa;line-height:1.8;white-space:pre-wrap;word-break:break-word}
+.info{font-size:11px;color:#555;margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--border)}
+.info span{color:#aaa}
+.success{text-align:center;padding:40px 20px}
+.s-tick{font-family:'Bebas Neue',sans-serif;font-size:48px;margin-bottom:16px}
+.s-title{font-family:'Bebas Neue',sans-serif;font-size:28px;color:#4ade80;letter-spacing:.1em;margin-bottom:12px}
+.s-msg{font-size:12px;color:var(--mute);margin-bottom:32px;line-height:1.6}
+</style>
 </head>
 <body>
-    <div id="root"></div>
-
-    <script type="text/babel">
-        const GOLD = "#C9A84C";
-        const DARK = "#0f0f0f";
-        const CARD = "#1a1a1a";
-        const BORDER = "#2a2a2a";
-        const ACCENT = "#C9A84C22";
-        const WA_NUMBER = "18297014845";
-
-        const positions = [
-            {
-                id: "turno-manana", label: "Turno Mañana", icon: "🌅",
-                apertura: ["Encender extractores", "Abrir gas", "Encender freidora", "Encender plancha", "Rellenar capacillos de su turno", "Buscar insumos de su turno (pan, queso demás)", "Rellenar salsas de su turno", "Revisar y reportar faltantes", "Organizar computadora, caja e impresora"],
-                cierre: ["Limpieza tope del pantry y comandera", "Botar basura (si está muy llena)", "Fregar bandejas de carne utilizadas"],
-            },
-            {
-                id: "comandera", label: "Comandera", icon: "📋",
-                apertura: ["Buscar todo lo necesario de papelería. (paquetes, fundas, papel antigrasos)", "Revisar funcionamiento de las plataformas de pedidos", "Llenar capacillos de ketchup", "Revisar bebidas para ver si hay que apagarlas en plataformas"],
-                cierre: ["Fregar todos los trastes", "Organizar anaquel", "Apagar plataformas", "Cerrar gas", "Apagar extractores", "Entrar carrito"],
-            },
-            {
-                id: "plancha", label: "Plancha", icon: "🔥",
-                apertura: ["Encender y/o revisar plancha", "Revisar stock de proteínas. (Hamburguesa, chimi, bacon etc.)"],
-                cierre: ["Limpieza de planchas", "Limpieza mesa", "Limpieza pared de plancha"],
-            },
-            {
-                id: "pantry", label: "Pantry", icon: "🥗",
-                apertura: ["Revisar vegetales", "Reabastecer pan", "Rellenar salsas", "Reabastecer queso", "Revisar productos de pantry"],
-                cierre: ["Limpiar pantry", "Cubrir productos del pantry con papel film", "Revisar productos del pantry, informar sobre faltantes", "Botar Basura"],
-            },
-            {
-                id: "freidora", label: "Freidora", icon: "🍟",
-                apertura: ["Encender/revisar freidora", "Abastecerse/ revisar de papas de todos los tipos", "Revisar alitas", "Revisar pechugas", "Organizar estación de empanizado", "Colocar paquetes de envío en mesa"],
-                cierre: ["Apagar freidora por el regulador", "Limpieza de freidora (dentro y fuera)", "Trapear", "Colocar desengrasante en exterior"],
-            },
-            {
-                id: "produccion", label: "Producción", icon: "👨‍🍳",
-                apertura: ["Preparación de salsa (en base a necesidad)", "Preparación de recetas (en base a necesidad; hongos, honey mustard, mermelada, caramelizada, etc.)", "Organización de carnes en bandeja", "Preparación/verificación de vegetales y colocación en pantry o nevera", "Preparación/verificacion de otros (queso suizo, pastrami)", "Porcionamiento de papas, pollos, alitas y demás en base a disponibilidad de fundas azules"],
-                cierre: ["Realizar y enviar inventario"],
-            },
-            {
-                id: "cajera", label: "Cajera", icon: "💰",
-                apertura: ["Verificación de funcionamiento de sistemas", "Revisar funcionamiento de impresora. (impresión de prueba)", "Organización de caja, computadora e impresora"],
-                cierre: ["Digitación de pedidos plataformas", "Realizar cierre de caja. (No se cierra con descuadre, investigar descuadre antes de)", "Enviar datos del cierre a María, luego de verificado y acertado", "Guardar efectivo con todos los respaldos en sobre marcado con la fecha y grapado", "Cerrar sistemas", "Apagar computadora", "Apagar impresora", "Verificar en sistema que estén cerradas todas las cuentas"],
-            },
-            {
-                id: "mesera", label: "Meseras", icon: "🍽️",
-                apertura: ["Colocar laptop, caja e impresora", "Iniciar sistemas", "Revisar plataformas", "Envolver utensilios de comer"],
-                cierre: ["Recoger menús", "Verificar en sistema que estén cerradas todas las cuentas"],
-            },
-        ];
-
-        function CheckItem({ label, checked, onChange, disabled }) {
-            return (
-                <div onClick={!disabled ? onChange : null} style={{display: "flex", alignItems: "flex-start", gap: 12, padding: "10px 14px", borderRadius: 8, cursor: disabled ? "not-allowed" : "pointer", background: checked ? "#C9A84C14" : "transparent", border: `1px solid ${checked ? GOLD + "55" : BORDER}`, marginBottom: 8, transition: "all 0.2s", userSelect: "none", opacity: disabled ? 0.5 : 1}}>
-                    <div style={{width: 20, height: 20, minWidth: 20, borderRadius: 5, border: `2px solid ${checked ? GOLD : "#444"}`, background: checked ? GOLD : "transparent", display: "flex", alignItems: "center", justifyContent: "center", marginTop: 1, transition: "all 0.2s"}}>
-                        {checked && (<svg width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4L4 7.5L10 1" stroke="#0f0f0f" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>)}
-                    </div>
-                    <span style={{fontFamily: "'DM Mono', monospace", fontSize: 13, color: checked ? "#ddd" : "#aaa", lineHeight: 1.5, textDecoration: checked ? "line-through" : "none", transition: "all 0.2s"}}>{label}</span>
+<div id="root"></div>
+<script type="text/babel">
+const GOLD="#C9A84C", WA="18297014845";
+ 
+const POSITIONS=[
+{id:"turno-manana",label:"Turno Mañana",icon:"🌅",
+ apertura:["Encender extractores","Abrir gas","Encender freidora","Encender plancha","Rellenar capacillos de su turno","Buscar insumos de su turno (pan, queso demás)","Rellenar salsas de su turno","Revisar y reportar faltantes","Organizar computadora, caja e impresora"],
+ cierre:["Limpieza tope del pantry y comandera","Botar basura (si está muy llena)","Fregar bandejas de carne utilizadas"]},
+{id:"comandera",label:"Comandera",icon:"📋",
+ apertura:["Buscar todo lo necesario de papelería. (paquetes, fundas, papel antigrasos)","Revisar funcionamiento de las plataformas de pedidos","Llenar capacillos de ketchup","Revisar bebidas para ver si hay que apagarlas en plataformas"],
+ cierre:["Fregar todos los trastes","Organizar anaquel","Apagar plataformas","Cerrar gas","Apagar extractores","Entrar carrito"]},
+{id:"plancha",label:"Plancha",icon:"🔥",
+ apertura:["Encender y/o revisar plancha","Revisar stock de proteínas. (Hamburguesa, chimi, bacon etc.)"],
+ cierre:["Limpieza de planchas","Limpieza mesa","Limpieza pared de plancha"]},
+{id:"pantry",label:"Pantry",icon:"🥗",
+ apertura:["Revisar vegetales","Reabastecer pan","Rellenar salsas","Reabastecer queso","Revisar productos de pantry"],
+ cierre:["Limpiar pantry","Cubrir productos del pantry con papel film","Revisar productos del pantry, informar sobre faltantes","Botar Basura"]},
+{id:"freidora",label:"Freidora",icon:"🍟",
+ apertura:["Encender/revisar freidora","Abastecerse/ revisar de papas de todos los tipos","Revisar alitas","Revisar pechugas","Organizar estación de empanizado","Colocar paquetes de envío en mesa"],
+ cierre:["Apagar freidora por el regulador","Limpieza de freidora (dentro y fuera)","Trapear","Colocar desengrasante en exterior"]},
+{id:"produccion",label:"Producción",icon:"👨‍🍳",
+ apertura:["Preparación de salsa (en base a necesidad)","Preparación de recetas (en base a necesidad; hongos, honey mustard, mermelada, caramelizada, etc.)","Organización de carnes en bandeja","Preparación/verificación de vegetales y colocación en pantry o nevera","Preparación/verificacion de otros (queso suizo, pastrami)","Porcionamiento de papas, pollos, alitas y demás en base a disponibilidad de fundas azules"],
+ cierre:["Realizar y enviar inventario"]},
+{id:"cajera",label:"Cajera",icon:"💰",
+ apertura:["Verificación de funcionamiento de sistemas","Revisar funcionamiento de impresora. (impresión de prueba)","Organización de caja, computadora e impresora"],
+ cierre:["Digitación de pedidos plataformas","Realizar cierre de caja. (No se cierra con descuadre, investigar descuadre antes de)","Enviar datos del cierre a María, luego de verificado y acertado","Guardar efectivo con todos los respaldos en sobre marcado con la fecha y grapado","Cerrar sistemas","Apagar computadora","Apagar impresora","Verificar en sistema que estén cerradas todas las cuentas"]},
+{id:"mesera",label:"Meseras",icon:"🍽️",
+ apertura:["Colocar laptop, caja e impresora","Iniciar sistemas","Revisar plataformas","Envolver utensilios de comer"],
+ cierre:["Recoger menús","Verificar en sistema que estén cerradas todas las cuentas"]},
+];
+ 
+function App(){
+  const [step,setStep]=React.useState("select");
+  const [posId,setPosId]=React.useState(null);
+  const [turn,setTurn]=React.useState(null);
+  const [name,setName]=React.useState("");
+  const [checks,setChecks]=React.useState({});
+  const [note,setNote]=React.useState("");
+  const [nameErr,setNameErr]=React.useState(false);
+  const [noteErr,setNoteErr]=React.useState(false);
+  const [msg,setMsg]=React.useState(null);
+  const [sending,setSending]=React.useState(false);
+ 
+  const pos=POSITIONS.find(p=>p.id===posId);
+  const items=pos&&turn?pos[turn]:[];
+  const tLabel=turn==="apertura"?"APERTURA":"CIERRE";
+  const tColor=turn==="apertura"?"#60a5fa":GOLD;
+  const total=items.length;
+  const done=items.filter((_,i)=>checks[i]).length;
+  const prog=total?Math.round(done/total*100):0;
+  const allDone=total>0&&done===total;
+ 
+  const toggle=i=>{
+    if(!name.trim()){setNameErr(true);setTimeout(()=>setNameErr(false),3000);return;}
+    setChecks(p=>({...p,[i]:!p[i]}));
+  };
+ 
+  const reset=()=>{
+    setStep("select");setPosId(null);setTurn(null);
+    setName("");setChecks({});setNote("");
+    setNameErr(false);setNoteErr(false);setMsg(null);setSending(false);
+  };
+ 
+  const build=()=>{
+    const ok=[],bad=[];
+    items.forEach((it,i)=>{
+      const arr=checks[i]?ok:bad;
+      arr.push(`${arr.length+1}. [${tLabel}] ${it}`);
+    });
+    let m=`Hola María! Es ${name}\n`;
+    if(!allDone) m+="\n*NO COMPLETE TODAS LAS TAREAS*\n";
+    m+=`\nRealicé mi checklist de ${pos.label} - ${tLabel}\n`;
+    if(!allDone) m+="\nTAREAS NO COMPLETADAS ⚠️\n"+bad.join("\n")+"\n";
+    m+="\nTAREAS COMPLETADAS ✓\n"+ok.join("\n")+"\n";
+    if(note.trim()) m+=`\nNotas: ${note}`;
+    return {m,hasBad:bad.length>0};
+  };
+ 
+  const finalize=()=>{
+    const {m,hasBad}=build();
+    if(hasBad&&!note.trim()){setNoteErr(true);return;}
+    setMsg(m);setStep("confirm");
+  };
+ 
+  const send=async()=>{
+    setSending(true);
+    const enc=encodeURIComponent(msg);
+    if(navigator.share){
+      try{
+        await navigator.share({text:msg,title:"Checklist Smash Lab"});
+        setTimeout(()=>{setStep("success");setSending(false);},500);
+        return;
+      }catch(e){console.log(e);}
+    }
+    window.location.href=`https://wa.me/${WA}?text=${enc}`;
+    setTimeout(()=>{setStep("success");setSending(false);},1000);
+  };
+ 
+  const turnOpts=pos?[
+    {key:"apertura",label:"Apertura",count:pos.apertura.length,color:"#60a5fa"},
+    {key:"cierre",label:"Cierre",count:pos.cierre.length,color:GOLD},
+  ]:[];
+ 
+  return (
+    <div className="app">
+      <div className="wrap head">
+        <span className="brand">SMASH LAB</span>
+        <span className="tag">CHECKLIST</span>
+      </div>
+      <div className="wrap">
+        {step==="select" && <>
+          <p className="hint">Selecciona tu posición para continuar</p>
+          {POSITIONS.map(p=>(
+            <div key={p.id} className="row" onClick={()=>{setPosId(p.id);setStep("turn");}}>
+              <span className="row-icon">{p.icon}</span>
+              <span className="row-title">{p.label}</span>
+              <span className="arrow">›</span>
+            </div>
+          ))}
+        </>}
+ 
+        {step==="turn" && pos && <>
+          <button className="back" onClick={()=>setStep("select")}>← Volver</button>
+          <div style={{marginBottom:20}}>
+            <span className="pos-title">{pos.label}</span>
+            <p className="hint" style={{marginTop:4,marginBottom:0}}>¿Qué turno estás completando?</p>
+          </div>
+          {turnOpts.map(t=>(
+            <div key={t.key} className="row" onClick={()=>{setTurn(t.key);setStep("checklist");}}>
+              <div className="row-dot" style={{background:t.color}} />
+              <div>
+                <div className="row-title">{t.label}</div>
+                <div className="row-sub">{t.count} tareas</div>
+              </div>
+              <span className="arrow">›</span>
+            </div>
+          ))}
+        </>}
+ 
+        {step==="checklist" && pos && <>
+          <button className="back" onClick={()=>setStep("turn")}>← Volver</button>
+          <div className="field field-named">
+            <label className="label">NOMBRE COMPLETO</label>
+            <input className={`input ${name?"on":""}`} type="text" value={name}
+                   onChange={e=>setName(e.target.value)} placeholder="Tu nombre..." autoFocus/>
+            {nameErr && <div className="alert">⚠️ Ingresa tu nombre antes de marcar items</div>}
+          </div>
+          <div className="pos-row">
+            <span className="pos-title">{pos.label}</span>
+            {name && <span className="name-tag">/ {name}</span>}
+          </div>
+          <div className="stats">
+            <span className="stat">{done}/{total} completadas</span>
+            <span className={`stat ${prog===100?"done":"gold"}`}>{prog}%</span>
+          </div>
+          <div className="bar"><div style={{width:`${prog}%`}}/></div>
+ 
+          <div className="sec">
+            <div className="sec-head">
+              <div className="sec-title-wrap">
+                <div className="sec-bar" style={{background:tColor}}/>
+                <span className="sec-title" style={{color:tColor}}>{tLabel}</span>
+              </div>
+              <span className={`badge ${allDone?"done":""}`}>{done}/{total}</span>
+            </div>
+            {items.map((it,i)=>{
+              const on=!!checks[i];
+              const off=!name.trim();
+              return (
+                <div key={i} className={`check ${on?"on":""} ${off?"off":""}`}
+                     onClick={()=>!off&&toggle(i)}>
+                  <div className="check-box">
+                    {on && <svg width="11" height="9" viewBox="0 0 11 9" fill="none">
+                      <path d="M1 4L4 7.5L10 1" stroke="#0f0f0f" strokeWidth="2"
+                            strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>}
+                  </div>
+                  <span className="check-text">{it}</span>
                 </div>
-            );
-        }
+              );
+            })}
+          </div>
+ 
+          <div className="field">
+            <label className="label">
+              NOTAS / OBSERVACIONES <small>(opcional{!allDone?", obligatoria si hay tareas incompletas":""})</small>
+            </label>
+            <textarea className={`textarea ${note?"on":""} ${noteErr?"err":""}`} value={note}
+                      onChange={e=>{setNote(e.target.value);setNoteErr(false);}}
+                      placeholder={!allDone?"Describe por qué no pudiste completar las tareas...":"Alguna observación adicional (opcional)..."}
+                      rows={3}/>
+            {noteErr && <div className="alert" style={{marginTop:8}}>⚠️ Debes explicar por qué no completaste las tareas marcadas</div>}
+          </div>
+ 
+          <button className="btn btn-wa" onClick={finalize}>✓ FINALIZAR Y CONFIRMAR EN WHATSAPP</button>
+        </>}
+ 
+        {step==="confirm" && msg && (
+          <div className="panel">
+            <div style={{marginBottom:24}}>
+              <div className="panel-title">MENSAJE A ENVIAR</div>
+              <div className="msg">{msg}</div>
+            </div>
+            <div className="info">📱 Se enviará a María al número: <span>+1 (829) 701-4845</span></div>
+            <button className="btn btn-wa" onClick={send} disabled={sending} style={{marginBottom:12}}>
+              {sending?"⏳ ENVIANDO...":"📱 ENVIAR A WHATSAPP"}
+            </button>
+            <button className="btn btn-back" onClick={()=>setStep("checklist")}>← VOLVER AL CHECKLIST</button>
+          </div>
+        )}
+ 
+        {step==="success" && (
+          <div className="panel success">
+            <div className="s-tick">✓</div>
+            <div className="s-title">ENVIADO</div>
+            <div className="s-msg">Tu mensaje ha sido enviado a María.<br/>Gracias por completar el checklist.</div>
+            <button className="btn btn-blue" onClick={reset}>NUEVO CHECKLIST</button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+ 
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
 
-        function SectionBlock({ title, color, items, checks, onToggle, disabled, sectionKey }) {
-            const done = items.filter((_, i) => checks[i]).length;
-            return (
-                <div style={{ marginBottom: 24 }}>
-                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
-                        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                            <div style={{ width: 4, height: 22, borderRadius: 4, background: color }} />
-                            <span style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 20, color, letterSpacing: "0.1em" }}>{title}</span>
-                        </div>
-                        <span style={{fontFamily: "'DM Mono', monospace", fontSize: 11, color: done === items.length ? "#4ade80" : "#666", background: done === items.length ? "#4ade8020" : "#ffffff10", padding: "3px 9px", borderRadius: 20, border: `1px solid ${done === items.length ? "#4ade8040" : "#333"}`}}>{done}/{items.length}</span>
-                    </div>
-                    {items.map((item, i) => (
-                        <CheckItem key={i} label={item} checked={checks[i] || false} onChange={() => onToggle(i)} disabled={disabled} />
-                    ))}
-                </div>
-            );
-        }
-
-        function ProgressBar({ value }) {
-            return (
-                <div style={{ height: 4, background: "#2a2a2a", borderRadius: 4, overflow: "hidden", marginBottom: 24 }}>
-                    <div style={{ height: "100%", width: `${value}%`, background: `linear-gradient(90deg, ${GOLD}, #e8c96e)`, borderRadius: 4, transition: "width 0.4s ease" }} />
-                </div>
-            );
-        }
-
-        function App() {
-            const [step, setStep] = React.useState("select");
-            const [selectedPos, setSelectedPos] = React.useState(null);
-            const [turnType, setTurnType] = React.useState(null);
-            const [nombre, setNombre] = React.useState("");
-            const [checks, setChecks] = React.useState({});
-            const [nota, setNota] = React.useState("");
-            const [showNameAlert, setShowNameAlert] = React.useState(false);
-            const [showNoteAlert, setShowNoteAlert] = React.useState(false);
-            const [messageToShare, setMessageToShare] = React.useState(null);
-            const [sendingMessage, setSendingMessage] = React.useState(false);
-
-            const pos = positions.find(p => p.id === selectedPos);
-            const getSections = () => {
-                if (!pos) return [];
-                if (turnType === "apertura") return [{ key: "apertura", title: "APERTURA", color: "#60a5fa", items: pos.apertura }];
-                if (turnType === "cierre") return [{ key: "cierre", title: "CIERRE", color: GOLD, items: pos.cierre }];
-                return [];
-            };
-
-            const sections = getSections();
-            const totalTasks = sections.reduce((a, s) => a + s.items.length, 0);
-            const doneTasks = sections.reduce((a, s) => a + s.items.filter((_, i) => checks[`${s.key}-${i}`]).length, 0);
-            const progress = totalTasks > 0 ? Math.round((doneTasks / totalTasks) * 100) : 0;
-            const allDone = totalTasks > 0 && doneTasks === totalTasks;
-
-            const handleToggle = (sectionKey, i) => {
-                if (!nombre.trim()) {
-                    setShowNameAlert(true);
-                    setTimeout(() => setShowNameAlert(false), 3000);
-                    return;
-                }
-                setChecks(prev => ({ ...prev, [`${sectionKey}-${i}`]: !prev[`${sectionKey}-${i}`] }));
-            };
-
-            const handleReset = () => {
-                setStep("select"); setSelectedPos(null); setTurnType(null);
-                setNombre(""); setChecks({}); setNota(""); setShowNameAlert(false);
-                setShowNoteAlert(false); setMessageToShare(null); setSendingMessage(false);
-            };
-
-            const generateMessage = () => {
-                const incompleteTasks = [];
-                const completedTasks = [];
-                let incompleteCounter = 1;
-                let completedCounter = 1;
-
-                sections.forEach(s => {
-                    s.items.forEach((item, i) => {
-                        if (checks[`${s.key}-${i}`]) {
-                            completedTasks.push({
-                                section: s.title,
-                                task: item,
-                                number: completedCounter
-                            });
-                            completedCounter++;
-                        } else {
-                            incompleteTasks.push({
-                                section: s.title,
-                                task: item,
-                                number: incompleteCounter
-                            });
-                            incompleteCounter++;
-                        }
-                    });
-                });
-
-                let message = `Hola María! Es ${nombre}\n`;
-
-                if (!allDone) {
-                    message += "\n*NO COMPLETE TODAS LAS TAREAS*\n";
-                }
-
-                message += `\nRealicé mi checklist de ${pos.label} - ${turnType === "apertura" ? "APERTURA" : "CIERRE"}\n`;
-
-                if (allDone) {
-                    message += "\nTAREAS COMPLETADAS ✓\n";
-                    completedTasks.forEach(task => {
-                        message += `${task.number}. [${task.section}] ${task.task}\n`;
-                    });
-                } else {
-                    message += "\nTAREAS NO COMPLETADAS ⚠️\n";
-                    incompleteTasks.forEach(task => {
-                        message += `${task.number}. [${task.section}] ${task.task}\n`;
-                    });
-                    message += "\nTAREAS COMPLETADAS ✓\n";
-                    completedTasks.forEach(task => {
-                        message += `${task.number}. [${task.section}] ${task.task}\n`;
-                    });
-                }
-
-                if (nota.trim()) {
-                    message += `\nNotas: ${nota}`;
-                }
-
-                return { message, incompleteTasks };
-            };
-
-            const handleFinalizar = () => {
-                const { message, incompleteTasks } = generateMessage();
-
-                // Validar: si hay tareas incompletas y no hay nota, bloquear
-                if (incompleteTasks.length > 0 && !nota.trim()) {
-                    setShowNoteAlert(true);
-                    return;
-                }
-
-                setMessageToShare(message);
-                setStep("confirm");
-            };
-
-            const handleShareToWhatsApp = async () => {
-                setSendingMessage(true);
-                const encodedMessage = encodeURIComponent(messageToShare);
-                
-                // Intentar Web Share API primero (móvil)
-                if (navigator.share) {
-                    try {
-                        await navigator.share({
-                            text: messageToShare,
-                            title: "Checklist Smash Lab"
-                        });
-                        setTimeout(() => {
-                            setStep("success");
-                            setSendingMessage(false);
-                        }, 500);
-                        return;
-                    } catch (err) {
-                        console.log("Share API cancelado o error:", err);
-                    }
-                }
-
-                // Fallback: wa.me
-                window.location.href = `https://wa.me/${WA_NUMBER}?text=${encodedMessage}`;
-                setTimeout(() => {
-                    setStep("success");
-                    setSendingMessage(false);
-                }, 1000);
-            };
-
-            return (
-                <div style={{minHeight: "100vh", background: DARK, fontFamily: "'DM Mono', monospace", display: "flex", flexDirection: "column", alignItems: "center", padding: "24px 16px 60px"}}>
-                    <div style={{ width: "100%", maxWidth: 520, marginBottom: 28 }}>
-                        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 4 }}>
-                            <span style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 32, color: GOLD, letterSpacing: "0.12em" }}>SMASH LAB</span>
-                            <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 10, color: "#555", background: "#1f1f1f", padding: "3px 8px", borderRadius: 4, border: "1px solid #2a2a2a", letterSpacing: "0.08em" }}>CHECKLIST</span>
-                        </div>
-                    </div>
-
-                    <div style={{ width: "100%", maxWidth: 520 }}>
-
-                        {step === "select" && (
-                            <div>
-                                <p style={{ fontFamily: "'DM Mono', monospace", fontSize: 12, color: "#666", marginBottom: 20 }}>Selecciona tu posición para continuar</p>
-                                {positions.map(p => (
-                                    <div key={p.id} onClick={() => { setSelectedPos(p.id); setStep("turn"); }} style={{ background: CARD, border: `1px solid ${BORDER}`, borderRadius: 10, padding: "16px 20px", marginBottom: 10, cursor: "pointer", display: "flex", alignItems: "center", gap: 14, transition: "all 0.2s" }}>
-                                        <span style={{ fontSize: 22 }}>{p.icon}</span>
-                                        <span style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 22, color: "#ddd", letterSpacing: "0.08em" }}>{p.label}</span>
-                                        <span style={{ marginLeft: "auto", color: "#444", fontSize: 16 }}>›</span>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-
-                        {step === "turn" && pos && (
-                            <div>
-                                <button onClick={() => setStep("select")} style={{ background: "none", border: "none", color: "#555", cursor: "pointer", fontFamily: "'DM Mono', monospace", fontSize: 12, marginBottom: 20, display: "flex", alignItems: "center", gap: 6 }}>← Volver</button>
-                                <div style={{ marginBottom: 20 }}>
-                                    <span style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 26, color: GOLD, letterSpacing: "0.1em" }}>{pos.label}</span>
-                                    <p style={{ fontFamily: "'DM Mono', monospace", fontSize: 12, color: "#555", marginTop: 4 }}>¿Qué turno estás completando?</p>
-                                </div>
-                                {[
-                                    { key: "apertura", label: "Apertura", desc: `${pos.apertura.length} tareas`, color: "#60a5fa" },
-                                    { key: "cierre", label: "Cierre", desc: `${pos.cierre.length} tareas`, color: GOLD },
-                                ].map(t => (
-                                    <div key={t.key} onClick={() => { setTurnType(t.key); setStep("checklist"); }} style={{ background: CARD, border: `1px solid ${BORDER}`, borderRadius: 10, padding: "16px 20px", marginBottom: 10, cursor: "pointer", display: "flex", alignItems: "center", gap: 14, transition: "all 0.2s" }}>
-                                        <div style={{ width: 10, height: 10, borderRadius: "50%", background: t.color, minWidth: 10 }} />
-                                        <div>
-                                            <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 20, color: "#ddd", letterSpacing: "0.08em" }}>{t.label}</div>
-                                            <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 11, color: "#555" }}>{t.desc}</div>
-                                        </div>
-                                        <span style={{ marginLeft: "auto", color: "#444", fontSize: 16 }}>›</span>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-
-                        {step === "checklist" && pos && (
-                            <div>
-                                <button onClick={() => setStep("turn")} style={{ background: "none", border: "none", color: "#555", cursor: "pointer", fontFamily: "'DM Mono', monospace", fontSize: 12, marginBottom: 20, display: "flex", alignItems: "center", gap: 6 }}>← Volver</button>
-                                <div style={{ marginBottom: 24, paddingBottom: 24, borderBottom: `1px solid ${BORDER}` }}>
-                                    <label style={{ fontFamily: "'DM Mono', monospace", fontSize: 11, color: "#666", letterSpacing: "0.06em", display: "block", marginBottom: 8 }}>NOMBRE COMPLETO</label>
-                                    <input type="text" value={nombre} onChange={e => setNombre(e.target.value)} placeholder="Tu nombre..." autoFocus style={{ width: "100%", background: CARD, border: `1px solid ${nombre ? GOLD + "55" : BORDER}`, borderRadius: 8, padding: "13px 16px", color: "#ddd", fontFamily: "'DM Mono', monospace", fontSize: 14, marginBottom: 8 }} />
-                                    {showNameAlert && (
-                                        <div style={{ background: "#aa4422", border: "1px solid #dd6644", borderRadius: 6, padding: "10px 12px", fontFamily: 
+ 
