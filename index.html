@@ -165,17 +165,9 @@ function App(){
     setMsg(m);setStep("confirm");
   };
  
-  const send=async()=>{
+  const send=()=>{
     setSending(true);
-    const enc=encodeURIComponent(msg);
-    if(navigator.share){
-      try{
-        await navigator.share({text:msg,title:"Checklist Smash Lab"});
-        setTimeout(()=>{setStep("success");setSending(false);},500);
-        return;
-      }catch(e){console.log(e);}
-    }
-    window.location.href=`https://wa.me/${WA}?text=${enc}`;
+    window.location.href=`https://wa.me/${WA}?text=${encodeURIComponent(msg)}`;
     setTimeout(()=>{setStep("success");setSending(false);},1000);
   };
  
