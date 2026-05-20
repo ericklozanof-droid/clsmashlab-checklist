@@ -1,0 +1,16 @@
+{
+  "name": "clsmashlab-checklist",
+  "version": "1.0.0",
+  "description": "Smash Lab employee operations checklist with Netlify Blobs storage",
+  "main": "index.html",
+  "author": "Erick @ Smash Lab",
+  "license": "MIT",
+  "dependencies": {
+    "@netlify/blobs": "^6.0.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "dev": "netlify dev",
+    "build": "echo 'Static site'"
+  }
+}

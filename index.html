@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smash Lab - Checklist</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'DM Mono', monospace; background: #0f0f0f; color: #ddd; }
+        #root { display: flex; flex-direction: column; min-height: 100vh; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #111; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+        textarea:focus, input:focus { outline: none; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const GOLD = "#C9A84C";
+        const DARK = "#0f0f0f";
+        const CARD = "#1a1a1a";
+        const BORDER = "#2a2a2a";
+        const ACCENT = "#C9A84C22";
+        const WA_NUMBER = "18297014845";
+
+        const positions = [
+            {
+                id: "turno-manana", label: "Turno Mañana", icon: "🌅",
+                apertura: ["Encender extractores", "Abrir gas", "Encender freidora", "Encender plancha", "Rellenar capacillos de su turno", "Buscar insumos de su turno (pan, queso demás)", "Rellenar salsas de su turno", "Revisar y reportar faltantes", "Organizar computadora, caja e impresora"],
+                cierre: ["Limpieza tope del pantry y comandera", "Botar basura (si está muy llena)", "Fregar bandejas de carne utilizadas"],
+            },
+            {
+                id: "comandera", label: "Comandera", icon: "📋",
+                apertura: ["Buscar todo lo necesario de papelería. (paquetes, fundas, papel antigrasos)", "Revisar funcionamiento de las plataformas de pedidos", "Llenar capacillos de ketchup", "Revisar bebidas para ver si hay que apagarlas en plataformas"],
+                cierre: ["Fregar todos los trastes", "Organizar anaquel", "Apagar plataformas", "Cerrar gas", "Apagar extractores", "Entrar carrito"],
+            },
+            {
+                id: "plancha", label: "Plancha", icon: "🔥",
+                apertura: ["Encender y/o revisar plancha", "Revisar stock de proteínas. (Hamburguesa, chimi, bacon etc.)"],
+                cierre: ["Limpieza de planchas", "Limpieza mesa", "Limpieza pared de plancha"],
+            },
+            {
+                id: "pantry", label: "Pantry", icon: "🥗",
+                apertura: ["Revisar vegetales", "Reabastecer pan", "Rellenar salsas", "Reabastecer queso", "Revisar productos de pantry"],
+                cierre: ["Limpiar pantry", "Cubrir productos del pantry con papel film", "Revisar productos del pantry, informar sobre faltantes", "Botar Basura"],
+            },
+            {
+                id: "freidora", label: "Freidora", icon: "🍟",
+                apertura: ["Encender/revisar freidora", "Abastecerse/ revisar de papas de todos los tipos", "Revisar alitas", "Revisar pechugas", "Organizar estación de empanizado", "Colocar paquetes de envío en mesa"],
+                cierre: ["Apagar freidora por el regulador", "Limpieza de freidora (dentro y fuera)", "Trapear", "Colocar desengrasante en exterior"],
+            },
+            {
+                id: "produccion", label: "Producción", icon: "👨‍🍳",
+                apertura: ["Preparación de salsa (en base a necesidad)", "Preparación de recetas (en base a necesidad; hongos, honey mustard, mermelada, caramelizada, etc.)", "Organización de carnes en bandeja", "Preparación/verificación de vegetales y colocación en pantry o nevera", "Preparación/verificacion de otros (queso suizo, pastrami)", "Porcionamiento de papas, pollos, alitas y demás en base a disponibilidad de fundas azules"],
+                cierre: ["Realizar y enviar inventario"],
+            },
+            {
+                id: "cajera", label: "Cajera", icon: "💰",
+                apertura: ["Verificación de funcionamiento de sistemas", "Revisar funcionamiento de impresora. (impresión de prueba)", "Organización de caja, computadora e impresora"],
+                cierre: ["Digitación de pedidos plataformas", "Realizar cierre de caja. (No se cierra con descuadre, investigar descuadre antes de)", "Enviar datos del cierre a María, luego de verificado y acertado", "Guardar efectivo con todos los respaldos en sobre marcado con la fecha y grapado", "Cerrar sistemas", "Apagar computadora", "Apagar impresora", "Verificar en sistema que estén cerradas todas las cuentas"],
+            },
+            {
+                id: "mesera", label: "Meseras", icon: "🍽️",
+                apertura: ["Colocar laptop, caja e impresora", "Iniciar sistemas", "Revisar plataformas", "Envolver utensilios de comer"],
+                cierre: ["Recoger menús", "Verificar en sistema que estén cerradas todas las cuentas"],
+            },
+        ];
+
+        function CheckItem({ label, checked, onChange, disabled }) {
+            return (
+                <div onClick={!disabled ? onChange : null} style={{display: "flex", alignItems: "flex-start", gap: 12, padding: "10px 14px", borderRadius: 8, cursor: disabled ? "not-allowed" : "pointer", background: checked ? "#C9A84C14" : "transparent", border: `1px solid ${checked ? GOLD + "55" : BORDER}`, marginBottom: 8, transition: "all 0.2s", userSelect: "none", opacity: disabled ? 0.5 : 1}}>
+                    <div style={{width: 20, height: 20, minWidth: 20, borderRadius: 5, border: `2px solid ${checked ? GOLD : "#444"}`, background: checked ? GOLD : "transparent", display: "flex", alignItems: "center", justifyContent: "center", marginTop: 1, transition: "all 0.2s"}}>
+                        {checked && (<svg width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4L4 7.5L10 1" stroke="#0f0f0f" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>)}
+                    </div>
+                    <span style={{fontFamily: "'DM Mono', monospace", fontSize: 13, color: checked ? "#ddd" : "#aaa", lineHeight: 1.5, textDecoration: checked ? "line-through" : "none", transition: "all 0.2s"}}>{label}</span>
+                </div>
+            );
+        }
+
+        function SectionBlock({ title, color, items, checks, onToggle, disabled }) {
+            const done = items.filter((_, i) => checks[i]).length;
+            return (
+                <div style={{ marginBottom: 24 }}>
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                            <div style={{ width: 4, height: 22, borderRadius: 4, background: color }} />
+                            <span style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 20, color, letterSpacing: "0.1em" }}>{title}</span>
+                        </div>
+                        <span style={{fontFamily: "'DM Mono', monospace", fontSize: 11, color: done === items.length ? "#4ade80" : "#666", background: done === items.length ? "#4ade8020" : "#ffffff10", padding: "3px 9px", borderRadius: 20, border: `1px solid ${done === items.length ? "#4ade8040" : "#333"}`}}>{done}/{items.length}</span>
+                    </div>
+                    {items.map((item, i) => (
+                        <CheckItem key={i} label={item} checked={checks[i] || false} onChange={() => onToggle(i)} disabled={disabled} />
+                    ))}
+                </div>
+            );
+        }
+
+        function ProgressBar({ value }) {
+            return (
+                <div style={{ height: 4, background: "#2a2a2a", borderRadius: 4, overflow: "hidden", marginBottom: 24 }}>
+                    <div style={{ height: "100%", width: `${value}%`, background: `linear-gradient(90deg, ${GOLD}, #e8c96e)`, borderRadius: 4, transition: "width 0.4s ease" }} />
+                </div>
+            );
+        }
+
+        function App() {
+            const [step, setStep] = React.useState("select");
+            const [selectedPos, setSelectedPos] = React.useState(null);
+            const [turnType, setTurnType] = React.useState(null);
+            const [nombre, setNombre] = React.useState("");
+            const [checks, setChecks] = React.useState({});
+            const [nota, setNota] = React.useState("");
+            const [showNameAlert, setShowNameAlert] = React.useState(false);
+            const [isGeneratingPng, setIsGeneratingPng] = React.useState(false);
+            const [pngUrl, setPngUrl] = React.useState(null);
+            const [pngBlob, setPngBlob] = React.useState(null);
+
+            const pos = positions.find(p => p.id === selectedPos);
+            const getSections = () => {
+                if (!pos) return [];
+                if (turnType === "apertura") return [{ key: "apertura", title: "APERTURA", color: "#60a5fa", items: pos.apertura }];
+                if (turnType === "cierre") return [{ key: "cierre", title: "CIERRE", color: GOLD, items: pos.cierre }];
+                return [];
+            };
+
+            const sections = getSections();
+            const totalTasks = sections.reduce((a, s) => a + s.items.length, 0);
+            const doneTasks = sections.reduce((a, s) => a + s.items.filter((_, i) => checks[`${s.key}-${i}`]).length, 0);
+            const progress = totalTasks > 0 ? Math.round((doneTasks / totalTasks) * 100) : 0;
+            const allDone = totalTasks > 0 && doneTasks === totalTasks;
+
+            const handleToggle = (sectionKey, i) => {
+                if (!nombre.trim()) {
+                    setShowNameAlert(true);
+                    setTimeout(() => setShowNameAlert(false), 3000);
+                    return;
+                }
+                setChecks(prev => ({ ...prev, [`${sectionKey}-${i}`]: !prev[`${sectionKey}-${i}`] }));
+            };
+
+            const handleReset = () => {
+                setStep("select"); setSelectedPos(null); setTurnType(null);
+                setNombre(""); setChecks({}); setNota(""); setShowNameAlert(false);
+                setPngUrl(null); setPngBlob(null);
+            };
+
+            const now = new Date().toLocaleString("es-DO", {
+                day: "2-digit", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit",
+            });
+
+            const incompleteTasks = [];
+            sections.forEach(s => {
+                s.items.forEach((item, i) => {
+                    if (!checks[`${s.key}-${i}`]) {
+                        incompleteTasks.push({ section: s.title, task: item });
+                    }
+                });
+            });
+
+            const generatePNG = async () => {
+                setIsGeneratingPng(true);
+                try {
+                    const element = document.getElementById("resumen-content");
+                    const canvas = await html2canvas(element, {
+                        backgroundColor: DARK,
+                        scale: 2,
+                        logging: false,
+                        useCORS: true,
+                    });
+                    canvas.toBlob(async (blob) => {
+                        setPngBlob(blob);
+                        const url = URL.createObjectURL(blob);
+                        setPngUrl(url);
+                        setIsGeneratingPng(false);
+                    }, "image/png");
+                } catch (error) {
+                    console.error("Error generando PNG:", error);
+                    setIsGeneratingPng(false);
+                }
+            };
+
+            const shareToWhatsApp = async () => {
+                if (!pngBlob) return;
+
+                const formData = new FormData();
+                formData.append("file", pngBlob);
+                formData.append("nombre", nombre);
+                formData.append("posicion", pos.label);
+                formData.append("turno", turnType === "apertura" ? "APERTURA" : "CIERRE");
+
+                try {
+                    const response = await fetch("/.netlify/functions/save-checklist", {
+                        method: "POST",
+                        body: formData,
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        const message = `Checklist completado: ${nombre} - ${pos.label} - ${data.filename}`;
+                        window.location.href = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(message)}`;
+                    }
+                } catch (error) {
+                    console.error("Error compartiendo:", error);
+                    // Fallback: abrir WhatsApp de todas formas
+                    const message = `Checklist completado: ${nombre} - ${pos.label}`;
+                    window.location.href = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(message)}`;
+                }
+            };
+
+            return (
+                <div style={{minHeight: "100vh", background: DARK, fontFamily: "'DM Mono', monospace", display: "flex", flexDirection: "column", alignItems: "center", padding: "24px 16px 60px"}}>
+                    <div style={{ width: "100%", maxWidth: 520, marginBottom: 28 }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 4 }}>
+                            <span style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 32, color: GOLD, letterSpacing: "0.12em" }}>SMASH LAB</span>
+                            <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 10, color: "#555", background: "#1f1f1f", padding: "3px 8px", borderRadius: 4, border: "1px solid #2a2a2a", letterSpacing: "0.08em" }}>CHECKLIST</span>
+                        </div>
+                        <p style={{ fontFamily: "'DM Mono', monospace", fontSize: 11, color: "#555" }}>{now}</p>
+                    </div>
+
+                    <div style={{ width: "100%", maxWidth: 520 }}>
+
+                        {step === "select" && (
+                            <div>
+                                <p style={{ fontFamily: "'DM Mono', monospace", fontSize: 12, color: "#666", marginBottom: 20 }}>Selecciona tu posición para continuar</p>
+                                {positions.map(p => (
+                                    <div key={p.id} onClick={() => { setSelectedPos(p.id); setStep("turn"); }} style={{ background: CARD, border: `1px solid ${BORDER}`, borderRadius: 10, padding: "16px 20px", marginBottom: 10, cursor: "pointer", display: "flex", alignItems: "center", gap: 14, transition: "all 0.2s" }}>
+                                        <span style={{ fontSize: 22 }}>{p.icon}</span>
+                                        <span style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 22, color: "#ddd", letterSpacing: "0.08em" }}>{p.label}</span>
+                                        <span style={{ marginLeft: "auto", color: "#444", fontSize: 16 }}>›</span>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+
+                        {step === "turn" && pos && (
+                            <div>
+                                <button onClick={() => setStep("select")} style={{ background: "none", border: "none", color: "#555", cursor: "pointer", fontFamily: "'DM Mono', monospace", fontSize: 12, marginBottom: 20, display: "flex", alignItems: "center", gap: 6 }}>← Volver</button>
+                                <div style={{ marginBottom: 20 }}>
+                                    <span style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 26, color: GOLD, letterSpacing: "0.1em" }}>{pos.label}</span>
+                                    <p style={{ fontFamily: "'DM Mono', monospace", fontSize: 12, color: "#555", marginTop: 4 }}>¿Qué turno estás completando?</p>
+                                </div>
+                                {[
+                                    { key: "apertura", label: "Apertura", desc: `${pos.apertura.length} tareas`, color: "#60a5fa" },
+                                    { key: "cierre", label: "Cierre", desc: `${pos.cierre.length} tareas`, color: GOLD },
+                                ].map(t => (
+                                    <div key={t.key} onClick={() => { setTurnType(t.key); setStep("checklist"); }} style={{ background: CARD, border: `1px solid ${BORDER}`, borderRadius: 10, padding: "16px 20px", marginBottom: 10, cursor: "pointer", display: "flex", alignItems: "center", gap: 14, transition: "all 0.2s" }}>
+                                        <div style={{ width: 10, height: 10, borderRadius: "50%", background: t.color, minWidth: 10 }} />
+                                        <div>
+                                            <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 20, color: "#ddd", letterSpacing: "0.08em" }}>{t.label}</div>
+                                            <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 11, color: "#555" }}>{t.desc}</div>
+                                        </div>
+                                        <span style={{ marginLeft: "auto", color: "#444", fontSize: 16 }}>›</span>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+
+                        {step === "checklist" && pos && (
+                            <div>
+                                <button onClick={() => setStep("turn")} style={{ background: "none", border: "none", color: "#555", cursor: "pointer", fontFamily: "'DM Mono', monospace", fontSize: 12, marginBottom: 20, display: "flex", alignItems: "center", gap: 6 }}>← Volver</button>
+                                <div style={{ marginBottom: 24, paddingBottom: 24, borderBottom: `1px solid ${BORDER}` }}>
+                                    <label style={{ fontFamily: "'DM Mono', monospace", fontSize: 11, color: "#666", letterSpacing: "0.06em", display: "block", marginBottom: 8 }}>NOMBRE COMPLETO</label>
+                                    <input type="text" value={nombre} onChange={e => setNombre(e.target.value)} placeholder="Tu nombre..." autoFocus style={{ width: "100%", background: CARD, border: `1px solid ${nombre ? GOLD + "55" : BORDER}`, borderRadius: 8, padding: "13px 16px", color: "#ddd", fontFamily: "'DM Mono', monospace", fontSize: 14, marginBottom: 8 }} />
+                                    {showNameAlert && (
+                                        <div style={{ background: "#aa4422", border: "1px solid #dd6644", borderRadius: 6, padding: "10px 12px", fontFamily: "'DM Mono', monospace", fontSize: 11, color: "#fff", lineHeight: 1.4 }}>
+                                            ⚠️ Ingresa tu nombre antes de marcar items
+                                        </div>
+                                    )}
+                                </div>
+                                <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
+                                    <span style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 26, color: GOLD, letterSpacing: "0.1em" }}>{pos.label}</span>
+                                    {nombre && <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 11, color: "#555", marginTop: 2 }}>/ {nombre}</span>}
+                                </div>
+                                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
+                                    <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 11, color: "#555" }}>{doneTasks}/{totalTasks} completadas</span>
+                                    <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 11, color: progress === 100 ? "#4ade80" : GOLD }}>{progress}%</span>
+                                </div>
+                                <ProgressBar value={progress} />
+                                {sections.map(s => (
+                                    <SectionBlock key={s.key} title={s.title} color={s.color} items={s.items} checks={s.items.reduce((acc, _, i) => ({ ...acc, [i]: !!checks[`${s.key}-${i}`] }), {})} onToggle={i => handleToggle(s.key, i)} disabled={!nombre.trim()} />
+                                ))}
+                                <div style={{ marginBottom: 24 }}>
+                                    <label style={{ fontFamily: "'DM Mono', monospace", fontSize: 11, color: "#666", letterSpacing: "0.06em", display: "block", marginBottom: 8 }}>NOTAS / OBSERVACIONES <span style={{ color: "#444" }}>(opcional)</span></label>
+                                    <textarea value={nota} onChange={e => setNota(e.target.value)} placeholder="Alguna observación o faltante para reportar..." rows={3} style={{ width: "100%", background: CARD, border: `1px solid ${nota ? GOLD + "44" : BORDER}`, borderRadius: 8, padding: "12px 14px", color: "#aaa", fontFamily: "'DM Mono', monospace", fontSize: 12, resize: "vertical", lineHeight: 1.6 }} />
+                                </div>
+                                <button onClick={() => setStep("resumen")} style={{width: "100%", padding: "15px", background: "linear-gradient(135deg, #60a5fa, #4f8dd9)", border: "1px solid #60a5fa50", borderRadius: 8, color: "#fff", fontFamily: "'Bebas Neue', sans-serif", fontSize: 18, letterSpacing: "0.1em", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 10, transition: "all 0.2s"}}>
+                                    ✓ FINALIZAR CHECKLIST
+                                </button>
+                            </div>
+                        )}
+
+                        {step === "resumen" && pos && !pngUrl && (
+                            <div style={{ background: CARD, border: `1px solid ${BORDER}`, borderRadius: 12, padding: "24px 20px" }}>
+                                <div id="resumen-content" style={{ background: CARD, padding: "20px" }}>
+                                    <div style={{ marginBottom: 20, paddingBottom: 20, borderBottom: `1px solid ${BORDER}` }}>
+                                        <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 28, color: GOLD, letterSpacing: "0.1em", marginBottom: 4 }}>SMASH LAB</div>
+                                        <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 11, color: "#666", marginBottom: 12 }}>{now}</div>
+                                        <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 12, color: "#aaa", marginBottom: 2 }}>
+                                            <span style={{ color: "#ddd", fontWeight: "bold" }}>{nombre}</span> / {pos.label}
+                                        </div>
+                                        <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 11, color: "#555" }}>
+                                            {turnType === "apertura" ? "APERTURA" : "CIERRE"}
+                                        </div>
+                                    </div>
+                                    <div style={{ marginBottom: 20 }}>
+                                        <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 16, color: GOLD, letterSpacing: "0.08em", marginBottom: 12 }}>ESTADO DEL CHECKLIST</div>
+                                        {allDone ? (
+                                            <div style={{ background: "#1a4d2e20", border: "1px solid #4ade8050", borderRadius: 8, padding: "12px 14px", fontFamily: "'DM Mono', monospace", fontSize: 12, color: "#4ade80" }}>
+                                                ✓ Todas las tareas completadas
+                                            </div>
+                                        ) : (
+                                            <div>
+                                                <div style={{ background: "#aa442220", border: "1px solid #dd664450", borderRadius: 8, padding: "12px 14px", fontFamily: "'DM Mono', monospace", fontSize: 11, color: "#dd9966", marginBottom: 12, lineHeight: 1.5 }}>
+                                                    {incompleteTasks.length} tarea{incompleteTasks.length !== 1 ? 's' : ''} pendiente{incompleteTasks.length !== 1 ? 's' : ''}
+                                                </div>
+                                                {incompleteTasks.map((task, i) => (
+                                                    <div key={i} style={{ fontFamily: "'DM Mono', monospace", fontSize: 11, color: "#aaa", marginBottom: 8, paddingLeft: 16 }}>
+                                                        ◇ {task.task}
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div style={{ marginBottom: 20, paddingBottom: 20, borderBottom: `1px solid ${BORDER}` }}>
+                                        <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 13, color: "#4ade80", letterSpacing: "0.08em", marginBottom: 10 }}>TAREAS COMPLETADAS</div>
+                                        <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 9, color: "#666", lineHeight: 1.8 }}>
+                                            {sections.map(s => (
+                                                <div key={s.key} style={{ marginBottom: 6 }}>
+                                                    {s.items.map((item, i) => 
+                                                        checks[`${s.key}-${i}`] && (
+                                                            <div key={i} style={{ color: "#4ade80", marginBottom: 3 }}>
+                                                                ✓ {item}
+                                                            </div>
+                                                        )
+                                                    )}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                    {nota && (
+                                        <div style={{ marginBottom: 20, paddingBottom: 20, borderBottom: `1px solid ${BORDER}` }}>
+                                            <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 13, color: GOLD, letterSpacing: "0.1em", marginBottom: 8 }}>NOTAS</div>
+                                            <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 11, color: "#aaa", lineHeight: 1.6 }}>{nota}</div>
+                                        </div>
+                                    )}
+                                </div>
+
+                                <button onClick={generatePNG} disabled={isGeneratingPng} style={{width: "100%", padding: "15px", marginTop: 20, marginBottom: 12, background: isGeneratingPng ? "#666" : "linear-gradient(135deg, #60a5fa, #4f8dd9)", border: "1px solid #60a5fa50", borderRadius: 8, color: "#fff", fontFamily: "'Bebas Neue', sans-serif", fontSize: 18, letterSpacing: "0.1em", cursor: isGeneratingPng ? "not-allowed" : "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 10, transition: "all 0.2s"}}>
+                                    {isGeneratingPng ? "⏳ GENERANDO..." : "📸 GENERAR PNG"}
+                                </button>
+
+                                <button onClick={() => setStep("select")} style={{ width: "100%", padding: "13px", background: CARD, border: `1px solid ${BORDER}`, borderRadius: 8, color: "#555", fontFamily: "'Bebas Neue', sans-serif", fontSize: 15, letterSpacing: "0.1em", cursor: "pointer", transition: "all 0.2s" }}>
+                                    ← VOLVER AL INICIO
+                                </button>
+                            </div>
+                        )}
+
+                        {step === "resumen" && pos && pngUrl && (
+                            <div style={{ background: CARD, border: `1px solid ${BORDER}`, borderRadius: 12, padding: "24px 20px" }}>
+                                <div style={{ marginBottom: 20, paddingBottom: 20, borderBottom: `1px solid ${BORDER}` }}>
+                                    <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 20, color: GOLD, letterSpacing: "0.1em", marginBottom: 12 }}>PNG GENERADO</div>
+                                    <img src={pngUrl} alt="Resumen" style={{ width: "100%", borderRadius: 8, border: `1px solid ${BORDER}`, marginBottom: 16 }} />
+                                </div>
+
+                                <button onClick={shareToWhatsApp} style={{width: "100%", padding: "15px", marginBottom: 12, background: "linear-gradient(135deg, #25d366, #1db954)", border: "1px solid #25d36650", borderRadius: 8, color: "#fff", fontFamily: "'Bebas Neue', sans-serif", fontSize: 18, letterSpacing: "0.1em", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 10, transition: "all 0.2s"}}>
+                                    <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                                    </svg>
+                                    COMPARTIR EN WHATSAPP
+                                </button>
+
+                                <button onClick={generatePNG} style={{width: "100%", padding: "13px", marginBottom: 12, background: CARD, border: `1px solid ${BORDER}`, borderRadius: 8, color: "#555", fontFamily: "'Bebas Neue', sans-serif", fontSize: 15, letterSpacing: "0.1em", cursor: "pointer", transition: "all 0.2s" }}>
+                                    🔄 REGENERAR PNG
+                                </button>
+
+                                <button onClick={() => setStep("select")} style={{ width: "100%", padding: "13px", background: CARD, border: `1px solid ${BORDER}`, borderRadius: 8, color: "#555", fontFamily: "'Bebas Neue', sans-serif", fontSize: 15, letterSpacing: "0.1em", cursor: "pointer", transition: "all 0.2s" }}>
+                                    ← VOLVER AL INICIO
+                                </button>
+                            </div>
+                        )}
+
+                    </div>
+                </div>
+            );
+        }
+
+        ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+    </script>
+</body>
+</html>
